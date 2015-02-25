@@ -1,0 +1,16 @@
+{
+  "name": "iframe-sandbox",
+  "version": "1.0.0",
+  "description": "creates a sandboxed iframe with methods for eval and writing to document body",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "beefy example.js --live --open"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "hat": "0.0.3",
+    "iframe": "^0.3.1"
+  }
+}
