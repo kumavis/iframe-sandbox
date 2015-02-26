@@ -40,16 +40,16 @@ proto.eval = function(code, callback){
   this.sendMessage({ type: 'eval', data: code }, callback)
 }
 
-proto.sendMessage = function(message, callback){
-  var uuid = message.uuid = message.uuid || Uuid()
-  this._listeners[uuid] = callback
-  this.iframeElement.contentWindow.postMessage(message, '*')
-}
-
 proto.setHTML = function(htmlString, callback){
   callback = callback || noop
   var code = 'document.body.innerHTML = decodeURIComponent("'+encodeURIComponent(htmlString)+'"); document.body.innerHTML'
   this.eval(code, callback)
+}
+
+proto.sendMessage = function(message, callback){
+  var uuid = message.uuid = message.uuid || Uuid()
+  this._listeners[uuid] = callback
+  this.iframeElement.contentWindow.postMessage(message, '*')
 }
 
 proto._listenForResponse = function(event){
@@ -72,6 +72,10 @@ proto._generateInitiationSource = function(){
     '    // abort if other origin',
     '    if (event.origin !== "'+parentOrigin+'") {',
     '      console.log("Incomming message rejected by sandbox");',
+    '      return;',
+    '    }',
+    '    // if not an eval message, abort',
+    '    if (original.type !== "eval") {',
     '      return;',
     '    }',
     '    // eval message',
