@@ -17,7 +17,6 @@ function IframePreamble(){
   var docIsOpen = false
 
   function write(src, cb) {
-    console.log('iframe write:',src)
     if (!docIsOpen) {
       document.open()
       docIsOpen = true
