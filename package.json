@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "hat": "0.0.3",
+    "dnode": "^1.2.0",
     "iframe": "^0.3.1"
   }
 }

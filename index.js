@@ -1,107 +1,53 @@
-var Iframe = require('iframe')
-var Uuid = require('hat')
+var WritableStream = require('stream').Writable
+var inherits = require('util').inherits
+var iframe = require('iframe')
+var Dnode = require('dnode')
+var preamble = require('./preamble.js')
+var stringify = require('./module-stringify.js')
+var IframeStream = require('./iframe-stream.js')
 
 module.exports = IframeSandbox
 
 
-const __sandbox_init__ = '__initialize__'
-
-function IframeSandbox(opts) {
-  if (!(this instanceof IframeSandbox)) return new IframeSandbox(opts)
-  this._initialize(opts)
+function IframeSandbox(opts, cb) {
+  var preambleSrc = stringify(preamble)
+  var preambleBody = '<'+'script type="text/javascript"'+'>'+preambleSrc+'<'+'/script'+'>'
+  var frame = iframe({ body: preambleBody, container: opts.container })
+  var iframeStream = IframeStream(frame.iframe)
+  var rpc = Dnode()
+  rpc.on('remote', function(iframeController) {
+    prepareApiObject(iframeController, cb)
+  })
+  iframeStream.pipe(rpc).pipe(iframeStream)
 }
 
-proto = IframeSandbox.prototype
+function prepareApiObject(iframeController, cb) {
+  var apiObject = {
+    eval: iframeController.eval,
+    createWriteStream: createWriteStream,
+  }
 
-proto._initialize = function(opts){
-  opts = opts || {}
-  this.container = opts.container || document.body
-  this.origin = opts.origin || location.origin
-  this.payload = new String()
-    + '<script type="text/javascript" src="data:text/javascript;charset=UTF-8,'
-    + encodeURIComponent('setTimeout(function(){\n;' + this._generateInitiationSource() + '\n;}, 0)')
-    + '"></script>'
-  this.iframe = null
-  this._listeners = {}
-  window.addEventListener('message', this._listenForResponse.bind(this), false)
-}
+  cb(null, apiObject)
 
-proto.start = function(callback){
-  callback = callback || noop
-  this.iframe = Iframe({ container: this.container, body: this.payload })
-  this.iframeElement = this.iframe.iframe
-  this._listeners[__sandbox_init__] = function() {
-    callback(null)
+  function createWriteStream() {
+    return new DomWriteStream(iframeController)
   }
 }
 
-proto.eval = function(code, callback){
-  callback = callback || noop
-  this.sendMessage({ type: 'eval', data: code }, callback)
+// IframeController DOM Write Stream
+
+function DomWriteStream(iframeController){
+  WritableStream.call(this)
+  this.iframeController = iframeController
+  this.on('finish', function(){
+    iframeController.writeClose()
+  })
 }
 
-proto.setHTML = function(htmlString, callback){
-  callback = callback || noop
-  var code = 'document.body.innerHTML = decodeURIComponent("'+encodeURIComponent(htmlString)+'"); document.body.innerHTML'
-  this.eval(code, callback)
+inherits(DomWriteStream, WritableStream)
+
+DomWriteStream.prototype._write = function(chunk, encoding, cb) {
+  this.iframeController.write(Buffer(chunk).toString())
+  cb()
 }
 
-proto.sendMessage = function(message, callback){
-  var uuid = message.uuid = message.uuid || Uuid()
-  this._listeners[uuid] = callback
-  this.iframeElement.contentWindow.postMessage(message, '*')
-}
-
-proto._listenForResponse = function(event){
-  var message = event.data
-  var uuid = message && message.uuid
-  if (!uuid) return
-  var handler = this._listeners[uuid]
-  if (!handler) return
-  handler.apply(null, message.data)
-  delete this._listeners[uuid]
-}
-
-proto._generateInitiationSource = function(){
-  var parentOrigin = this.origin
-  return [
-    ';(function init(window, frames, console){',
-    '  window.addEventListener("message", respondToMessage, false);',
-    '  function respondToMessage(event) {',
-    '    var original = event.data',
-    '    // abort if other origin',
-    '    if (event.origin !== "'+parentOrigin+'") {',
-    '      console.log("Incomming message rejected by sandbox");',
-    '      return;',
-    '    }',
-    '    // if not an eval message, abort',
-    '    if (original.type !== "eval") {',
-    '      return;',
-    '    }',
-    '    // eval message',
-    '    try {',
-    '      var result = globalEval(original.data);',
-    '      reply(original, [null, result]);',
-    '    } catch (error) {',
-    '      reply(original,[error.toString()]);',
-    '    }',
-    '  }',
-    '  function reply(original, data) {',
-    '    var message = {uuid: original.uuid, data: data};',
-    '    // send message back',
-    '    frames.parent.postMessage(message, "'+parentOrigin+'");',
-    '  }',
-    '  function globalEval(code) {',
-    '    // eval with global context',
-    '    return (0,eval)(code);',
-    '  }',
-    '  reply({uuid: "'+__sandbox_init__+'"})',
-    '})(window, frames, console);',
-  ].join('\n')
-}
-
-//
-// util
-//
-
-function noop() { }

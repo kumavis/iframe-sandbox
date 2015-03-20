@@ -6,24 +6,20 @@ Infinite loops will crash the main page.
 ### usage
 
 ```js
-sandbox = IframeSandbox(opts)
-sandbox.start(function(){
+var IframeSandbox = require('./index.js')
+
+IframeSandbox({ container: document.body }, function(err, sandbox){
+
   console.log('ready')
-  sandbox.setHTML('<h3>Hello World</h3>', optionalCallback)
-  sandbox.eval('1+2', optionalCallback)
+
+  sandbox.eval('1+2', function(err, result){
+    console.log('eval:',result)
+  })
+
 })
 ```
 
 ### methods
-
-###### start
-
-Starts the sandbox.
-Calls the callback when initialized.
-
-```js
-sandbox.start( function(err){ /* ... */ } )
-```
 
 ###### eval
 
@@ -34,11 +30,18 @@ Calls the callback with the error (as a string) or the result.
 sandbox.eval( jsString, function(err, result){ /* ... */ } )
 ```
 
-###### setHTML
+###### createWriteStream
 
-Sets the innerHTML of the document body.
-Calls the callback when complete with the error or the resulting `document.body.innerHTML`.
+Creates a WriteStream that writes to the document via `document.write`.
 
 ```js
-sandbox.setHTML( htmlString, function(err, result){ /* ... */ } )
+var ws = sandbox.createWriteStream()
+
+ws.write('<pre>')
+ws.write('talk like a robot')
+ws.write('</pre>')
+ws.write('<b>')
+ws.write('string like a trie')
+ws.write('</b>')
+ws.end()
 ```
