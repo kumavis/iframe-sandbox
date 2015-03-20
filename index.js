@@ -9,9 +9,10 @@ var IframeStream = require('./iframe-stream.js')
 module.exports = IframeSandbox
 
 
+var preambleSrc = stringify(preamble)
+var preambleBody = '<'+'script type="text/javascript"'+'>'+preambleSrc+'<'+'/script'+'>'
+
 function IframeSandbox(opts, cb) {
-  var preambleSrc = stringify(preamble)
-  var preambleBody = '<'+'script type="text/javascript"'+'>'+preambleSrc+'<'+'/script'+'>'
   var frame = iframe({ body: preambleBody, container: opts.container })
   var iframeStream = IframeStream(frame.iframe)
   var rpc = Dnode()
