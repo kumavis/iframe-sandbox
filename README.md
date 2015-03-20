@@ -6,7 +6,7 @@ Infinite loops will crash the main page.
 ### usage
 
 ```js
-var IframeSandbox = require('./index.js')
+var IframeSandbox = require('iframe-sandbox')
 
 IframeSandbox({ container: document.body }, function(err, sandbox){
 
