@@ -24,20 +24,12 @@ function IframePreamble(){
       parentStream._setupListener()
     }
     document.write(src)
-var head = document.head
-var script = document.createElement("script")
-script.src = 'poop.js'
-head.appendChild(script)
     if (cb) cb()
   }
 
   function writeClose(src, cb) {
     docIsOpen = false
     document.close()
-var head = document.head
-var script = document.createElement("script")
-script.src = 'skat.js'
-head.appendChild(script)
     if (cb) cb()
   }
 
