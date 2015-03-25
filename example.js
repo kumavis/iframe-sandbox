@@ -10,7 +10,13 @@ IframeSandbox({}, function(err, sandbox){
 
       var ws = sandbox.createWriteStream()
 
+      // internal and external scripts
       ws.write('<'+'script>console.log("iframe.log:",window.rofl)</script'+'>')
+      ws.write('<'+'script src="example2.js"></script'+'>')
+
+      // internal and external styles
+      ws.write('<'+'style >pre { color: blue }</style>')
+      ws.write('<'+'link href="example3.css">')
 
       ws.write('<pre>')
       ws.write('talk like a robot')

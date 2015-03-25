@@ -45,3 +45,13 @@ ws.write('string like a trie')
 ws.write('</b>')
 ws.end()
 ```
+
+### notes
+
+Writing external script tags to the document does not seem to work.
+The following will not load `bundle.js`.
+```js
+var ws = sandbox.createWriteStream()
+ws.write('<script src="bundle.js"></script>')
+ws.end()
+```

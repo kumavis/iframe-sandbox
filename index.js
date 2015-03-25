@@ -13,7 +13,7 @@ var preambleSrc = stringify(preamble)
 var preambleBody = '<'+'script type="text/javascript"'+'>'+preambleSrc+'<'+'/script'+'>'
 
 function IframeSandbox(opts, cb) {
-  var frame = iframe({ body: preambleBody, container: opts.container })
+  var frame = iframe({ body: preambleBody, container: opts.container, sandboxAttributes:[] })
   var iframeStream = IframeStream(frame.iframe)
   var rpc = Dnode()
   rpc.on('remote', function(iframeController) {
