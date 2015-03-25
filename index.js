@@ -2,6 +2,7 @@ var WritableStream = require('stream').Writable
 var inherits = require('util').inherits
 var iframe = require('iframe')
 var Dnode = require('dnode')
+var extend = require('xtend')
 var preamble = require('./preamble.js')
 var stringify = require('./module-stringify.js')
 var IframeStream = require('./iframe-stream.js')
@@ -13,7 +14,9 @@ var preambleSrc = stringify(preamble)
 var preambleBody = '<'+'script type="text/javascript"'+'>'+preambleSrc+'<'+'/script'+'>'
 
 function IframeSandbox(opts, cb) {
-  var frame = iframe({ body: preambleBody, container: opts.container, sandboxAttributes:[] })
+  var iframeConfig = extend(opts)
+  iframeConfig.body = preambleBody
+  var frame = iframe(iframeConfig)
   var iframeStream = IframeStream(frame.iframe)
   var rpc = Dnode()
   rpc.on('remote', function(iframeController) {
