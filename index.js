@@ -9,7 +9,7 @@ var IframeStream = require('./iframe-stream.js')
 module.exports = IframeSandbox
 
 
-var preambleSrc = meowserify('./preamble.js')
+var preambleSrc = meowserify(__dirname+'/preamble.js')
 var preambleBody = '<'+'script type="text/javascript"'+'>'+preambleSrc+'<'+'/script'+'>'
 
 function IframeSandbox(opts, cb) {
