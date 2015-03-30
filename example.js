@@ -1,6 +1,6 @@
 var IframeSandbox = require('./index.js')
 
-IframeSandbox({}, function(err, sandbox){
+IframeSandbox({container: document.body}, function(err, sandbox){
 
   console.log('ready')
 

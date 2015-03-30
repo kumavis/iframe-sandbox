@@ -3,14 +3,13 @@ var inherits = require('util').inherits
 var iframe = require('iframe')
 var Dnode = require('dnode')
 var extend = require('xtend')
-var preamble = require('./preamble.js')
-var stringify = require('./module-stringify.js')
+var meowserify = require('meowserify')
 var IframeStream = require('./iframe-stream.js')
 
 module.exports = IframeSandbox
 
 
-var preambleSrc = stringify(preamble)
+var preambleSrc = meowserify('./preamble.js')
 var preambleBody = '<'+'script type="text/javascript"'+'>'+preambleSrc+'<'+'/script'+'>'
 
 function IframeSandbox(opts, cb) {
