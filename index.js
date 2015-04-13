@@ -1,8 +1,9 @@
 var WritableStream = require('stream').Writable
+var EventEmitter = require('events').EventEmitter
 var inherits = require('util').inherits
+var extend = require('xtend')
 var iframe = require('iframe')
 var Dnode = require('dnode')
-var extend = require('xtend')
 var meowserify = require('meowserify')
 var IframeStream = require('./iframe-stream.js')
 
@@ -17,27 +18,53 @@ function IframeSandbox(opts, cb) {
   iframeConfig.body = preambleBody
   var frame = iframe(iframeConfig)
   var iframeStream = IframeStream(frame.iframe)
-  var rpc = Dnode()
+  var rpc = Dnode({
+    sendMessage: sendMessage,
+  })
+  var remoteApiObjects = []
   rpc.on('remote', function(iframeController) {
-    prepareApiObject(iframeController, cb)
+    var apiObject = prepareRemoteApiObject(iframeController, cb)
+    remoteApiObjects.push(apiObject)
   })
   iframeStream.pipe(rpc).pipe(iframeStream)
+
+  return rpc
+
+  // emit message on apiObject
+  // there shouldn't actually be more than one
+  function sendMessage() {
+    var args = Array.prototype.slice.call(arguments)
+    args.unshift('message')
+    remoteApiObjects.forEach(function(apiObject){
+      apiObject.emit.apply(apiObject, args)
+    })
+  }
 }
 
-function prepareApiObject(iframeController, cb) {
-  var apiObject = {
-    eval: iframeController.eval,
-    createWriteStream: createWriteStream,
-  }
-
+function prepareRemoteApiObject(iframeController, cb) {
+  var apiObject = new RemoteApiObject(iframeController)
   cb(null, apiObject)
+  return apiObject
+}
+
+// IframeController API Wrapper
+
+inherits(RemoteApiObject, EventEmitter)
+
+function RemoteApiObject(iframeController) {
+
+  this.createWriteStream = createWriteStream
+  this.eval = iframeController.eval
 
   function createWriteStream() {
     return new DomWriteStream(iframeController)
   }
+
 }
 
 // IframeController DOM Write Stream
+
+inherits(DomWriteStream, WritableStream)
 
 function DomWriteStream(iframeController){
   WritableStream.call(this)
@@ -46,8 +73,6 @@ function DomWriteStream(iframeController){
     iframeController.writeClose()
   })
 }
-
-inherits(DomWriteStream, WritableStream)
 
 DomWriteStream.prototype._write = function(chunk, encoding, cb) {
   this.iframeController.write(Buffer(chunk).toString())

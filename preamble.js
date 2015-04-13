@@ -9,6 +9,10 @@ var rpc = Dnode({
 })
 parentStream.pipe(rpc).pipe(parentStream)
 
+rpc.on('remote', function(parentController){
+  global.sandboxMessage = parentController.sendMessage.bind(parentController)
+})
+
 var docIsOpen = false
 
 function write(src, cb) {

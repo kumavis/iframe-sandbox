@@ -12,7 +12,9 @@
     "start": "beefy example.js --live --open"
   },
   "browserify": {
-    "transform": ["meowserify"]
+    "transform": [
+      "meowserify"
+    ]
   },
   "author": "",
   "license": "ISC",

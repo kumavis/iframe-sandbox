@@ -46,6 +46,19 @@ ws.write('</b>')
 ws.end()
 ```
 
+###### 'message' event
+
+Inside the sandbox context there is an extra exposed global `sandboxMessage` that will re-materialize objects in the main context and handle cross-context callbacks via [dnode](https://github.com/substack/dnode).
+Listen to the 'message' event in the main context to receive the messages
+
+```js
+sandbox.on('message', function(arg1, arg2, ...){
+  console.log(arguments)
+})
+
+sandbox.eval('sandboxMessage("hello", "world")')
+```
+
 ### notes
 
 Writing external script tags to the document does not seem to work.
