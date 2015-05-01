@@ -10,9 +10,9 @@ var rpc = Dnode({
 })
 
 parentStream
-  .pipe(new fifoTransform.wrap())
-  .pipe(rpc)
   .pipe(new fifoTransform.unwrap())
+  .pipe(rpc)
+  .pipe(new fifoTransform.wrap())
   .pipe(parentStream)
 
 rpc.on('remote', function(parentController){

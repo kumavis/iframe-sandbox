@@ -29,9 +29,9 @@ function IframeSandbox(opts, cb) {
   })
   
   iframeStream
-    .pipe(new fifoTransform.wrap())
-    .pipe(rpc)
     .pipe(new fifoTransform.unwrap())
+    .pipe(rpc)
+    .pipe(new fifoTransform.wrap())
     .pipe(iframeStream)
 
   return rpc

@@ -33,7 +33,7 @@ IframeStream.prototype._setupListener = function(e) {
 
 IframeStream.prototype._iframeMessage = function(event) {
   // only process messages from the iframe
-  if (!event.source === this.targetWindow) return
+  if (event.source !== this.targetWindow) return
   // uncork if not ready
   if (!this.ready) {
     this.ready = true
