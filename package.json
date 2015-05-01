@@ -20,6 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "dnode": "^1.2.0",
+    "fifo-transform": "^1.0.2",
     "iframe": "^0.3.1",
     "meowserify": "^1.0.0",
     "xtend": "^4.0.0"

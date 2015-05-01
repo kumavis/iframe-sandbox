@@ -6,6 +6,7 @@ var iframe = require('iframe')
 var Dnode = require('dnode')
 var meowserify = require('meowserify')
 var IframeStream = require('./iframe-stream.js')
+var fifoTransform = require('fifo-transform')
 
 module.exports = IframeSandbox
 
@@ -26,7 +27,12 @@ function IframeSandbox(opts, cb) {
     var apiObject = prepareRemoteApiObject(iframeController, cb)
     remoteApiObjects.push(apiObject)
   })
-  iframeStream.pipe(rpc).pipe(iframeStream)
+  
+  iframeStream
+    .pipe(new fifoTransform.wrap())
+    .pipe(rpc)
+    .pipe(new fifoTransform.unwrap())
+    .pipe(iframeStream)
 
   return rpc
 

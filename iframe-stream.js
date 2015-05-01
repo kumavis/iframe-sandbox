@@ -45,7 +45,8 @@ IframeStream.prototype._iframeMessage = function(event) {
 }
 
 IframeStream.prototype._write = function(chunk, encoding, cb) {
-  this.targetWindow.postMessage(Buffer(chunk).toString(), '*')
+  var payload = Buffer(chunk).toString()
+  this.targetWindow.postMessage(payload, '*')
   cb()
 }
 

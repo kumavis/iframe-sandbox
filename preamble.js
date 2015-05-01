@@ -1,5 +1,6 @@
 var ParentStream = require('./iframe-stream.js').ParentStream
 var Dnode = require('dnode')
+var fifoTransform = require('fifo-transform')
 
 var parentStream = ParentStream()
 var rpc = Dnode({
@@ -7,7 +8,12 @@ var rpc = Dnode({
   write: write,
   writeClose: writeClose,
 })
-parentStream.pipe(rpc).pipe(parentStream)
+
+parentStream
+  .pipe(new fifoTransform.wrap())
+  .pipe(rpc)
+  .pipe(new fifoTransform.unwrap())
+  .pipe(parentStream)
 
 rpc.on('remote', function(parentController){
   global.sandboxMessage = parentController.sendMessage.bind(parentController)
