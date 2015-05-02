@@ -19,6 +19,26 @@ IframeSandbox({ container: document.body }, function(err, sandbox){
 })
 ```
 
+### config
+
+All config options are passed to [`iframe`](https://github.com/npm-dom/iframe).
+See here for [`iframe` config options](https://github.com/npm-dom/iframe#options).
+
+```js
+var opts = {
+  container: document.body,  
+  src: urlOfBootstrappedIframe,  
+}
+
+IframeSandbox(opts, cb)
+```
+
+###### Bootstrapped iframe
+
+To use a hosted, bootstrapped iframe, specify the url as the `src` config option.
+See [here](https://github.com/kumavis/iframe-sandbox-bootstrap) for more about using a bootstrapped iframe.
+
+
 ### methods
 
 ###### eval
