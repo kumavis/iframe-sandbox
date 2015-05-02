@@ -1,4 +1,4 @@
-var DuplexStream = require('stream').Duplex
+var DuplexStream = require('readable-stream').Duplex
 var inherits = require('util').inherits
 
 /*

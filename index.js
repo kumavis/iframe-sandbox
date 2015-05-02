@@ -1,4 +1,4 @@
-var WritableStream = require('stream').Writable
+var WritableStream = require('readable-stream').Writable
 var EventEmitter = require('events').EventEmitter
 var inherits = require('util').inherits
 var extend = require('xtend')

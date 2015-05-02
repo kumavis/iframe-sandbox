@@ -23,6 +23,7 @@
     "fifo-transform": "^1.0.2",
     "iframe": "^0.3.1",
     "meowserify": "^1.0.0",
+    "readable-stream": "git://github.com/iojs/readable-stream.git#214a7eb1719b524e78c7634eaee6bd408e6c532f",
     "xtend": "^4.0.0"
   }
 }
