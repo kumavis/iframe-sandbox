@@ -1,6 +1,10 @@
 var IframeSandbox = require('./index.js')
 
-IframeSandbox({container: document.body}, function(err, sandbox){
+IframeSandbox({
+  container: document.body,
+  // optionally use bootstrapped iframe
+  //src: 'http://frame.vapor.to/',
+}, function(err, sandbox){
 
   console.log('ready')
 
@@ -10,14 +14,14 @@ IframeSandbox({container: document.body}, function(err, sandbox){
 
       var ws = sandbox.createWriteStream()
 
-      // internal and external scripts
+      // scripts
       ws.write('<'+'script>console.log("iframe.log:",window.rofl)</script'+'>')
-      ws.write('<'+'script src="example2.js"></script'+'>')
 
-      // internal and external styles
+      // styles
       ws.write('<'+'style >pre { color: blue }</style>')
-      ws.write('<'+'link href="example3.css">')
+      ws.write('<'+'style >b { color: red }</style>')
 
+      // standard dom
       ws.write('<pre>')
       ws.write('talk like a robot')
       ws.write('</pre>')
