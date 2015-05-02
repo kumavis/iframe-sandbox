@@ -1,6 +1,6 @@
 {
   "name": "iframe-sandbox",
-  "version": "3.1.2",
+  "version": "4.0.0",
   "description": "creates a sandboxed iframe with methods for eval and writing to document body",
   "main": "index.js",
   "repository": {
