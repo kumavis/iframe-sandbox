@@ -54,17 +54,12 @@ sandbox.eval( jsString, function(err, result){ /* ... */ } )
 ###### createWriteStream
 
 Creates a WriteStream that writes to the document via `document.write`.
+Note: scripts written to the DOM wont be run until 'document.close()' is called,
+triggered by the end of the stream.
 
 ```js
 var ws = sandbox.createWriteStream()
-
-ws.write('<pre>')
-ws.write('talk like a robot')
-ws.write('</pre>')
-ws.write('<b>')
-ws.write('string like a trie')
-ws.write('</b>')
-ws.end()
+somewhereAwesome.pipe(ws)
 ```
 
 ###### 'message' event

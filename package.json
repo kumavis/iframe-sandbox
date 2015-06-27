@@ -8,7 +8,7 @@
     "url": "https://github.com/kumavis/iframe-sandbox"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "beefy test/index.js --live --open",
     "start": "beefy example.js --live --open"
   },
   "browserify": {
@@ -23,7 +23,10 @@
     "fifo-transform": "^1.0.2",
     "iframe": "^0.3.1",
     "meowserify": "^1.0.0",
-    "readable-stream": "git://github.com/iojs/readable-stream.git#214a7eb1719b524e78c7634eaee6bd408e6c532f",
+    "readable-stream": "^2.0.0",
     "xtend": "^4.0.0"
+  },
+  "devDependencies": {
+    "tape": "^4.0.0"
   }
 }
