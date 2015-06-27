@@ -2,6 +2,7 @@
 
 Don't assume this is a perfect sandbox.
 Infinite loops will crash the main page.
+See [this thread](http://stackoverflow.com/questions/11510483/will-a-browser-give-an-iframe-a-separate-thread-for-javascript).
 
 ### usage
 
